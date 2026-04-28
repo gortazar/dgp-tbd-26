@@ -1,5 +1,7 @@
 package es.codeurjc.board.service;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,14 @@ public class PostService {
 
 	public Page<Post> getPosts(Pageable pageRequest) {
 		return postRepository.findAll(pageRequest);
+	}
+
+	public Optional<Post> findById(long id) {
+		return postRepository.findById(id);
+	}
+
+	public void createPost(Post post) {
+		postRepository.save(post);		
 	}
 
 	
