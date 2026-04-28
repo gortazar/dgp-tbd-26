@@ -26,36 +26,56 @@ import es.codeurjc.board.model.Comment;
 import es.codeurjc.board.model.Post;
 import es.codeurjc.board.repository.CommentRepository;
 import es.codeurjc.board.repository.PostRepository;
+import es.codeurjc.board.service.PostService;
+import io.getunleash.Unleash;
 
 @RestController
 @RequestMapping("/posts")
 public class PostController {
 
-	@Autowired
 	private PostRepository posts;
 
-	@Autowired
 	private CommentRepository comments;
 
+	private Unleash unleash;
+
+	private PostService postService;
+
+	public PostController(PostRepository posts, CommentRepository comments, Unleash unleash, PostService postService) {
+		this.posts = posts;
+		this.comments = comments;
+		this.unleash = unleash;
+		this.postService = postService;
+	}
+	
 	@PostConstruct
 	public void init() {
 
-		Post p = new Post();
-		p.setUsername("Pepe");
-		p.setTitle("Vendo moto");
-		p.setText("Bla bla...");
-		p.addComment(new Comment("Juan", "Pues si"));
-		p.addComment(new Comment("Maria", "Pues no"));
+		if(unleash.isEnabled("demo-data-flag")) {
+			Post p = new Post();
+			p.setUsername("Pepe");
+			p.setTitle("Vendo moto");
+			p.setText("Bla bla...");
+			p.addComment(new Comment("Juan", "Pues si"));
+			p.addComment(new Comment("Maria", "Pues no"));
 
-		posts.save(p);
+			posts.save(p);
+		}
+		
 	}
 
 	@GetMapping("/")
 	public Page<Post> getPosts(@RequestParam(required = false) Pageable pageRequest) {
+		
 		if(pageRequest == null) {
 			pageRequest = PageRequest.of(0, 100);
 		}
-		return posts.findAll(pageRequest);
+
+		if(unleash.isEnabled("service-flag")) {
+			return postService.getPosts(pageRequest);
+		} else {
+			return posts.findAll(pageRequest);
+		}
 	}
 
 	@GetMapping("/{id}")
