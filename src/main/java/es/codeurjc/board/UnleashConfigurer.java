@@ -17,7 +17,7 @@ public class UnleashConfigurer {
 		UnleashConfig config = UnleashConfig.builder()
 		        .appName("java-posts")
 		        .apiKey("default:development.unleash-insecure-api-token")
-		        .unleashAPI(URI.create("http://localhost:4242/api/"))
+		        .unleashAPI(URI.create("http://unleash:4242/api/"))
 		        .build();
 
 		return new DefaultUnleash(config);

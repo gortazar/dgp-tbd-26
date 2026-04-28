@@ -15,7 +15,7 @@ services:
 
   # The Unleash server contains the Unleash configuration and
   # communicates with client SDKs and Unleash Edge
-  web:
+  unleash:
     image: unleashorg/unleash-server:latest
     ports:
       - "4242:4242"
@@ -70,13 +70,19 @@ services:
       - --mysql-native-password=ON
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 2s
       timeout: 5s
       retries: 5
+      start_period: 5s
 
   app:
     image: dgp/posts:1.0-tbd
     depends_on:
       mysql-db:
         condition: service_healthy
+    ports:
+      - "8080:8080"
     environment:
-      SPRING_DATASOURCE_MYSQL_ROOT_PASSWORD: post
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: post
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create
