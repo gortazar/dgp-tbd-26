@@ -91,19 +91,15 @@ public class PostController {
 	@PostMapping("/")
 	public ResponseEntity<Post> createPost(@RequestBody Post post) {
 
-<<<<<<< Upstream, based on branch 'main' of git@github.com:gortazar/dgp-tbd-26.git
 		if(post.getTitle() == null || post.getTitle().isEmpty() || post.getText() == null || post.getText().isEmpty()) {
 			return ResponseEntity.badRequest().build();
 		}
 		
-		posts.save(post);
-=======
 		if(unleash.isEnabled("service-flag")) {
 			postService.createPost(post);
 		} else {
 			posts.save(post);
 		}
->>>>>>> ab10de9 Add service findById and createPost methods
 
 		URI location = fromCurrentRequest().path("/{id}").buildAndExpand(post.getId()).toUri();
 
