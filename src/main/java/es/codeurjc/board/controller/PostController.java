@@ -87,6 +87,10 @@ public class PostController {
 	@PostMapping("/")
 	public ResponseEntity<Post> createPost(@RequestBody Post post) {
 
+		if(post.getTitle() == null || post.getTitle().isEmpty() || post.getText() == null || post.getText().isEmpty()) {
+			return ResponseEntity.badRequest().build();
+		}
+		
 		posts.save(post);
 
 		URI location = fromCurrentRequest().path("/{id}").buildAndExpand(post.getId()).toUri();
