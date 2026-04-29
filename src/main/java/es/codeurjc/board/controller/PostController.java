@@ -31,6 +31,8 @@ import io.getunleash.Unleash;
 @RequestMapping("/posts")
 public class PostController {
 
+	private static final String SERVICE_FLAG = "service-flag";
+
 	private PostRepository posts;
 
 	private CommentRepository comments;
@@ -69,7 +71,7 @@ public class PostController {
 			pageRequest = PageRequest.of(0, 100);
 		}
 
-		if(unleash.isEnabled("service-flag")) {
+		if(unleash.isEnabled(SERVICE_FLAG)) {
 			return postService.getPosts(pageRequest);
 		} else {
 			return posts.findAll(pageRequest);
@@ -79,7 +81,7 @@ public class PostController {
 	@GetMapping("/{id}")
 	public Post getPost(@PathVariable long id) {
 
-		if(unleash.isEnabled("service-flag")) {
+		if(unleash.isEnabled(SERVICE_FLAG)) {
 			return postService.findById(id).orElseThrow();
 		} else {
 			return posts.findById(id).orElseThrow();
@@ -93,7 +95,7 @@ public class PostController {
 			return ResponseEntity.badRequest().build();
 		}
 		
-		if(unleash.isEnabled("service-flag")) {
+		if(unleash.isEnabled(SERVICE_FLAG)) {
 			postService.createPost(post);
 		} else {
 			posts.save(post);
@@ -107,26 +109,34 @@ public class PostController {
 	@PutMapping("/{id}")
 	public Post replacePost(@RequestBody Post newPost, @PathVariable long id) {
 
-		Post post = posts.findById(id).orElseThrow();
+		if(unleash.isEnabled(SERVICE_FLAG)) {
+			return postService.replacePost(newPost, id);
+		} else {
+			Post post = posts.findById(id).orElseThrow();
 
-		newPost.setId(id);
+			newPost.setId(id);
 
-		// We assume that comments are not updated with PUT operation
-		post.getComments().forEach(c -> newPost.addComment(c));
+			// We assume that comments are not updated with PUT operation
+			post.getComments().forEach(c -> newPost.addComment(c));
 
-		posts.save(newPost);
+			posts.save(newPost);
 
-		return newPost;
+			return newPost;
+		}
 	}
 
 	@DeleteMapping("/{id}")
 	public Post deletePost(@PathVariable long id) {
 
-		Post post = posts.findById(id).orElseThrow();
+		if(unleash.isEnabled(SERVICE_FLAG)){
+			return postService.deleteById(id);
+		} else {
+			Post post = posts.findById(id).orElseThrow();
 
-		posts.deleteById(id);
+			posts.deleteById(id);
 
-		return post;
+			return post;
+		}
 	}
 
 	@GetMapping("/{idPost}/comments/{idComment}")
