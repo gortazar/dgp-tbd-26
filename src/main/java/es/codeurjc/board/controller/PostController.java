@@ -54,7 +54,7 @@ public class PostController {
 			p.addComment(new Comment("Juan", "Pues si"));
 			p.addComment(new Comment("Maria", "Pues no"));
 
-			posts.save(p);
+			postService.createPost(p);
 		}
 		
 	}
@@ -110,7 +110,7 @@ public class PostController {
 	@PostMapping("/{idPost}/comments/")
 	public ResponseEntity<Comment> addComment(@PathVariable long idPost, @RequestBody Comment comment) {
 
-		Post post = posts.findById(idPost).orElseThrow();
+		Post post = postService.findById(idPost).orElseThrow();
 
 		comment.setPost(post);
 		comments.save(comment);
