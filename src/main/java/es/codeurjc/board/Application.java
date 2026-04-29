@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import es.codeurjc.board.repository.PostRepository;
 import es.codeurjc.board.service.PostService;
 import es.codeurjc.board.service.PostServiceFacade;
+import es.codeurjc.board.service.SmartPostService;
+import io.getunleash.Unleash;
 
 @SpringBootApplication
 public class Application {
@@ -16,8 +18,12 @@ public class Application {
 	}
 
 	@Bean
-	public PostServiceFacade postService(PostRepository posts) {
-		return new PostService(posts);	
+	public PostServiceFacade postService(PostRepository posts, Unleash unleash) {
+		if(unleash.isEnabled("smart-service-flag")) {
+			return new SmartPostService(posts);
+		} else {
+			return new PostService(posts);	
+		}
 	}
 
 }
