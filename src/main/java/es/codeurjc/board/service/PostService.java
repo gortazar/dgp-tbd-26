@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import es.codeurjc.board.model.Post;
 import es.codeurjc.board.repository.PostRepository;
 
-@Service
 public class PostService implements PostServiceFacade {
 
 	private final static Logger log = LoggerFactory.getLogger(PostService.class);

@@ -2,35 +2,66 @@ package es.codeurjc.board.service;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import es.codeurjc.board.model.Post;
+import es.codeurjc.board.repository.PostRepository;
 
 public class SmartPostService implements PostServiceFacade {
 
-    @Override
-    public Page<Post> getPosts(Pageable pageRequest) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPosts'");
-    }
+	private final static Logger log = LoggerFactory.getLogger(SmartPostService.class);
+	
+	private PostRepository postRepository;
+
+	public SmartPostService(PostRepository posts) {
+		this.postRepository = posts;
+	}
+
+	@Override
+	public Page<Post> getPosts(Pageable pageRequest) {
+		log.info("Using smart service...");
+		return postRepository.findAll(pageRequest);
+	}
 
     @Override
     public Optional<Post> findById(long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        log.info("Using smart service...");
+        return postRepository.findById(id);
     }
 
     @Override
     public void createPost(Post post) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createPost'");
+        log.info("Using smart service...");
+        if(post.getTitle() == null || post.getTitle().isEmpty() || post.getText() == null || post.getText().isEmpty()) {
+            throw new IllegalArgumentException("Invalid post");
+        }
+        postRepository.save(post);
     }
 
     @Override
     public Post replacePost(Post newPost, long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'replacePost'");
+        log.info("Using smart service...");
+        
+        Post post = postRepository.findById(id).orElseThrow();
+
+        if(newPost.getTitle() != null && !newPost.getTitle().isEmpty()) {
+            post.setTitle(newPost.getTitle());
+        }
+        if(newPost.getText() != null && !newPost.getText().isEmpty()) {
+            post.setText(newPost.getText());
+        }
+
+        if(newPost.getUsername() != post.getUsername()) {
+            throw new IllegalArgumentException("Cannot change the username of a post");
+        }
+
+		postRepository.save(post);
+
+		return post;
+
     }
 
     @Override
