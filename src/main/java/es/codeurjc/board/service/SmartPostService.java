@@ -66,8 +66,9 @@ public class SmartPostService implements PostServiceFacade {
 
     @Override
     public Post deleteById(long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+        Post post = postRepository.findById(id).orElseThrow();
+		postRepository.deleteById(id);
+		return post;
     }
     
 }
