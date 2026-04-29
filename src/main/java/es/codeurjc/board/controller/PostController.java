@@ -49,7 +49,7 @@ public class PostController {
 			Post p = new Post();
 			p.setUsername("Pepe");
 			p.setTitle("Vendo moto");
-			p.setText("Bla bla...");
+			p.setText("Bla bla bla...");
 			p.addComment(new Comment("Juan", "Pues si"));
 			p.addComment(new Comment("Maria", "Pues no"));
 
