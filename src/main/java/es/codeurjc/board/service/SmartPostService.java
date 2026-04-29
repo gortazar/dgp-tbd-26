@@ -1,5 +1,6 @@
 package es.codeurjc.board.service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public class SmartPostService {
             post.setText(newPost.getText());
         }
 
-        if(newPost.getUsername() != post.getUsername()) {
+        if(!Objects.equals(newPost.getUsername(), post.getUsername())) {
             throw new IllegalArgumentException("Cannot change the username of a post");
         }
 
