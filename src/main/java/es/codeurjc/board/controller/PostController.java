@@ -23,8 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import es.codeurjc.board.model.Comment;
 import es.codeurjc.board.model.Post;
 import es.codeurjc.board.repository.CommentRepository;
-import es.codeurjc.board.repository.PostRepository;
-import es.codeurjc.board.service.PostServiceFacade;
+import es.codeurjc.board.service.SmartPostService;
 import io.getunleash.Unleash;
 
 @RestController
@@ -35,9 +34,9 @@ public class PostController {
 
 	private Unleash unleash;
 
-	private PostServiceFacade postService;
+	private SmartPostService postService;
 
-	public PostController(CommentRepository comments, Unleash unleash, PostServiceFacade postService) {
+	public PostController(CommentRepository comments, Unleash unleash, SmartPostService postService) {
 		this.comments = comments;
 		this.unleash = unleash;
 		this.postService = postService;
