@@ -12,7 +12,7 @@ import es.codeurjc.board.model.Post;
 import es.codeurjc.board.repository.PostRepository;
 
 @Service
-public class PostService {
+public class PostService implements PostServiceFacade {
 
 	private final static Logger log = LoggerFactory.getLogger(PostService.class);
 	
@@ -23,20 +23,24 @@ public class PostService {
 		
 	}
 
+	@Override
 	public Page<Post> getPosts(Pageable pageRequest) {
 		log.info("Usando el service...");
 		return postRepository.findAll(pageRequest);
 	}
 
+	@Override
 	public Optional<Post> findById(long id) {
 		return postRepository.findById(id);
 	}
 
+	@Override
 	public void createPost(Post post) {
 		postRepository.save(post);		
 	}
 
-    public Post replacePost(Post newPost, long id) {
+    @Override
+	public Post replacePost(Post newPost, long id) {
 		Post post = postRepository.findById(id).orElseThrow();
 
 		newPost.setId(id);
@@ -49,6 +53,7 @@ public class PostService {
 		return newPost;
     }
 
+	@Override
 	public Post deleteById(long id) {
 		Post post = postRepository.findById(id).orElseThrow();
 

@@ -24,23 +24,20 @@ import es.codeurjc.board.model.Comment;
 import es.codeurjc.board.model.Post;
 import es.codeurjc.board.repository.CommentRepository;
 import es.codeurjc.board.repository.PostRepository;
-import es.codeurjc.board.service.PostService;
+import es.codeurjc.board.service.PostServiceFacade;
 import io.getunleash.Unleash;
 
 @RestController
 @RequestMapping("/posts")
 public class PostController {
 
-	private PostRepository posts;
-
 	private CommentRepository comments;
 
 	private Unleash unleash;
 
-	private PostService postService;
+	private PostServiceFacade postService;
 
-	public PostController(PostRepository posts, CommentRepository comments, Unleash unleash, PostService postService) {
-		this.posts = posts;
+	public PostController(CommentRepository comments, Unleash unleash, PostServiceFacade postService) {
 		this.comments = comments;
 		this.unleash = unleash;
 		this.postService = postService;
